@@ -1,3 +1,19 @@
+# Mê cung · Robot ESP32-S3 ảo
+
+Chạy từ thư mục gốc bằng `python -m http.server 8000`, rồi mở [phòng mô phỏng](http://localhost:8000). Trên Windows có thể dùng `py -m http.server 8000`. Dùng trình duyệt hiện đại có Web Crypto và DecompressionStream. Máy chủ chỉ phục vụ tệp tĩnh. Sau khi tải kho về, có thể chạy hoàn toàn ngoại tuyến.
+
+Chọn 5×5 hoặc 7×7 và seed, nhấn **Chạy** hoặc **Đi một ô**. Đổi bộ điều khiển sẽ khởi động lại cùng sân để đối chiếu. **Lệnh bị lọc** đếm quyết định có điểm cao nhất hướng vào tường. Khi đó robot chọn lệnh hợp lệ có điểm cao nhất tiếp theo. Một lượt dừng khi tới đích hoặc sau 120 ô.
+
+Trình duyệt đọc checkpoint có sẵn, kiểm SHA-256 và lấy 85.316 trọng số FP32 của actor (341.264 byte). Mỗi quyết định cập nhật trạng thái LSTM 128 phần tử từ vector 20 chiều theo thứ tự trong `MazeHierEnv._get_obs`. Bộ điều khiển chỉ nhận vector quan sát. Sân thử giữ hình học tường để tạo sáu tia ToF và vẽ bản đồ cho người xem. Hướng đích và lịch sử ghé ô được cung cấp cho cả hai chế độ.
+
+Lớp phần cứng ảo mô phỏng bánh xe, encoder lý tưởng và góc gyro. Vòng điều khiển dùng bước thời gian 5 ms, PID góc và phanh theo quãng đường. Mỗi ô gồm một pha quay và một pha chạy. Phiên bản web dùng động học phẳng, cảm biến lý tưởng, tia từ tâm xe và bộ sinh mê cung riêng. Cùng số seed với MuJoCo có thể tạo sân khác. Thử nghiệm trên chip, chạy firmware Xtensa, tiếp xúc vật lý và độ trễ phần cứng nằm ngoài phạm vi của bản web.
+
+### Kiểm tra tái lập
+
+Chạy `node web/test.mjs` với Node.js 24. Trên các seed 1–20 cho mỗi kích thước, RL tới đích 20/20 ở 5×5 (13,50 ô trung bình trong lượt thành công) và 19/20 ở 7×7 (22,21 ô). Đối chứng ưu tiên ô ít ghé đạt 20/20 ở cả hai kích thước, trung bình 22,00 và 45,20 ô. Toàn bộ lượt dùng cùng checkpoint, giới hạn 120 ô, cảm biến lý tưởng. Các số liệu MuJoCo của [dự án gốc](https://github.com/nlskarthik007/RL_Maze_Buggy) được giữ ở phần dưới.
+
+---
+
 <div align="center">
 
 <img src="assets/hero.svg" alt="Maze Hier-RL Animated Banner" width="100%" />
